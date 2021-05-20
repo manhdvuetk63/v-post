@@ -1,0 +1,82 @@
+name: v_post
+description: A new Flutter application.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_form_builder: ^6.0.0
+  dio: ^4.0.0
+  json_annotation: ^4.0.1
+  fluttertoast: ^8.0.6
+  i18n_extension: ^4.0.3
+  animations: ^2.0.0
+  shared_preferences: ^2.0.5
+  font_awesome_flutter: ^9.0.0
+  equatable: ^2.0.0
+  flutter_svg: ^0.22.0
+  flutter_bloc: ^7.0.0
+  flutter_modular: ^3.2.1
+  auto_size_text: ^2.1.0
+  wemapgl:
+    path: WeMap-Flutter-SDK
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  intl: any
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/images/
+    - assets/images/customer-manager/
+    - assets/images/home/
+    - assets/images/login/
+    - assets/images/appbar/
+    - assets/images/home/customer-manager/
+    - assets/images/home/customer-manager/assignment/
+    - assets/images/home/todo-list/
+    - assets/images/home/todo-list/contact-reminder/
+    - assets/images/home/dashboard/
+    - assets/images/home/contract/
+    - assets/images/home/delivery-support/
+    - assets/images/home/knowledge/
+    - assets/images/home/knowledge/compare/
+    - assets/images/home/knowledge/detail/
+    - assets/images/home/knowledge/insurance/
+
+
+  fonts:
+    - family: SF-Pro
+      fonts:
+        - asset: assets/fonts/SF-Pro.ttf
+        - asset: assets/fonts/SF-Pro-Italic.ttf
+          style: italic
+
+    - family: Quicksand
+      fonts:
+        - asset: assets/fonts/Quicksand-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Quicksand-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Quicksand-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Quicksand-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Quicksand-Bold.ttf
+          weight: 700
+
