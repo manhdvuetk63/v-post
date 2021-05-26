@@ -1,11 +1,13 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:v_post/app/home/home.module.dart';
 import 'package:v_post/app/login/login.view.dart';
+import 'package:v_post/app/signup/signup.view.dart';
 import 'package:v_post/app/splash-screen/splash-screen.view.dart';
 
 class AppModule extends Module {
   static String home = "/home";
   static String login = "/login";
+  static String signup = "/signup";
   static String splashScreen = "/";
 
   // Provide a list of dependencies to inject into your project
@@ -18,5 +20,6 @@ class AppModule extends Module {
     ModuleRoute(home, module: HomeModule(), transition: TransitionType.rightToLeftWithFade),
     ChildRoute(splashScreen, child: (context, args) => SplashScreen()),
     ChildRoute(login, child: (context, args) => Login(), transition: TransitionType.downToUp),
+    ChildRoute(signup, child: (context, args) => SignUp(), transition: TransitionType.rightToLeftWithFade),
   ];
 }

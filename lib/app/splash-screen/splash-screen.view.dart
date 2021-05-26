@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:i18n_extension/i18n_widget.dart';
 import 'package:v_post/app/app.module.dart';
 import 'package:v_post/app/components/loading-dots/loading-dots.component.dart';
 import 'package:v_post/config/application.dart';
@@ -17,8 +16,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    print(I18n.localeStr);
-    Application.sharePreference.putString("locale", I18n.localeStr);
     startTime();
   }
 
@@ -32,15 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            child: LoadingDots(numberDots: 5),
-            alignment: Alignment.center,
-          ),
-        ],
+      body: Container(
+        child: LoadingDots(numberDots: 5),
       ),
     );
   }

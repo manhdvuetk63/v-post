@@ -5,8 +5,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:v_post/app/app.module.dart';
 import 'package:v_post/app/app.view.dart';
 import 'package:v_post/config/application.dart';
+import 'package:v_post/themes/style.dart';
 import 'package:v_post/utils/shared_preferences.dart';
-import 'package:wemapgl/wemapgl.dart' as WEMAP;
+import 'package:wemapgl/wemapgl.dart' as we_map;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +16,7 @@ Future<void> main() async {
       statusBarColor: Colors.transparent,
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
-      systemNavigationBarDividerColor: Color.fromRGBO(0, 181, 156, 1),
+      systemNavigationBarDividerColor: AppColor.white,
     ),
   );
   await Future.wait([
@@ -23,6 +24,6 @@ Future<void> main() async {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]),
   ]);
   Application.sharePreference = await SpUtil.getInstance();
-  WEMAP.Configuration.setWeMapKey('GqfwrZUEfxbwbnQUhtBMFivEysYIxelQ');
+  we_map.Configuration.setWeMapKey('GqfwrZUEfxbwbnQUhtBMFivEysYIxelQ');
   runApp(ModularApp(module: AppModule(), child: AppWidget()));
 }

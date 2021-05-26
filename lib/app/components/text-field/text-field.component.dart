@@ -12,6 +12,7 @@ class TextFieldView extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final String? hintText;
   final String? initialValue;
+  final Icon? prefixIcon;
 
   const TextFieldView({
     required this.name,
@@ -19,6 +20,7 @@ class TextFieldView extends StatefulWidget {
     this.hintText,
     this.validator,
     this.initialValue,
+    this.prefixIcon,
   });
 
   @override
@@ -45,16 +47,30 @@ class TextFieldState extends State<TextFieldView> {
                     initialValue: widget.initialValue,
                     style: const TextStyle(fontSize: 18),
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      hintText: widget.hintText,
-                      hintStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: Color(0xFF7A7A7A)),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid)),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid)),
-                      suffixIcon: IconButton(
-                        icon: hasShowPassword ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
-                        onPressed: _cubit.toggleIconPassword,
-                      ),
-                    ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        hintText: widget.hintText,
+                        hintStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Color(0xFF7A7A7A)),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
+                          borderRadius: BorderRadius.circular(13),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
+                          borderRadius: BorderRadius.circular(13),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
+                          borderRadius: BorderRadius.circular(13),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
+                          borderRadius: BorderRadius.circular(13),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: hasShowPassword ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+                          onPressed: _cubit.toggleIconPassword,
+                        ),
+                        prefixIcon: widget.prefixIcon),
                     obscureText: !hasShowPassword,
                     keyboardType: TextInputType.text,
                     validator: widget.validator,
@@ -70,9 +86,24 @@ class TextFieldState extends State<TextFieldView> {
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(horizontal: 10),
                   hintText: widget.hintText,
-                  hintStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: Color(0xFF7A7A7A)),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid)),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid)),
+                  hintStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Color(0xFF7A7A7A)),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  prefixIcon: widget.prefixIcon,
                 ),
                 keyboardType: TextInputType.text,
                 validator: widget.validator,
