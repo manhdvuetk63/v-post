@@ -10,5 +10,6 @@ class AppColor {
 //  static const Color activeColor = Colors.black;
   static const Color borderColor = Color(0xFFEFEFEF);
   static const Color buttonColor = Color(0xFF2196F3);
-  static const Color accentColor = Color(0xFF00B4FF);
+  static const Color accentColor = Color(0xFF4CA7F0);
+  static const Color errorColor = Color(0xFFFF3E3E);
 }

@@ -29,7 +29,7 @@ class CommonButton extends StatelessWidget {
       ),
       style: TextButton.styleFrom(
         backgroundColor: backgroundColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }

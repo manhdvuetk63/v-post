@@ -9,17 +9,17 @@ dependencies:
   wemapgl_platform_interface:
     path: ./wemapgl_platform_interface
     
-  fluttertoast: ^8.0.6
+  fluttertoast: ^8.0.7
   url_launcher: ^6.0.3
   sqflite: ^2.0.0+3
   intl: ^0.17.0
   path_provider: ^2.0.1
-  http: ^0.13.2
+  http: ^0.13.3
   async: ^2.5.0
-  connectivity: ^3.0.3
+  connectivity: ^3.0.4
   rubber: ^1.0.0
-  syncfusion_flutter_charts: ^19.1.58
-  google_fonts: ^2.0.0
+  syncfusion_flutter_charts: ^19.1.64
+  google_fonts: ^2.1.0
   weather_icons: ^2.0.2
   cupertino_icons: ^1.0.2
   snaplist: ^0.1.8

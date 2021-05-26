@@ -1,8 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v_post/config/config_screen.dart';
-import 'dart:math' as math;
 
 part 'home.state.dart';
 

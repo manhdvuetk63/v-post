@@ -1,51 +1,49 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_modular/flutter_modular.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:v_post/app/app.module.dart';
 import 'package:v_post/app/components/app-title/app-title.component.dart';
 import 'package:v_post/app/components/common-button/common-button.component.dart';
 import 'package:v_post/app/components/text-field/text-field.component.dart';
-import 'package:v_post/app/login/login.cubit.dart';
-import 'package:v_post/config/application.dart';
+import 'package:v_post/app/signup/signup.cubit.dart';
 import 'package:v_post/config/config_screen.dart';
 import 'package:v_post/themes/style.dart';
 
-class Login extends StatefulWidget {
+class SignUp extends StatefulWidget {
+  const SignUp({Key? key}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() {
-    return _LoginState();
-  }
+  _SignUpState createState() => _SignUpState();
 }
 
-class _LoginState extends State<Login> {
+class _SignUpState extends State<SignUp> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
-  final LoginCubit _cubit = LoginCubit();
+
+  SignupCubit _cubit = SignupCubit();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.white,
-      body: Container(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          children: [
-            Spacer(flex: 2),
-            AppTitle(),
-            Spacer(flex: 2),
-            Text(
-              "Đăng nhập",
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 30, fontWeight: FontWeight.w700),
-            ),
-            Spacer(),
-            SizedBox(child: buildLoginWidget(), width: SizeConfig.safeBlockHorizontal * 85),
-            SizedBox(height: SizeConfig.safeBlockVertical),
-            SizedBox(child: buildOtherMethodWidget(), width: SizeConfig.safeBlockHorizontal * 80),
-            Spacer(flex: 4),
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(15),
+          child: Column(
+            children: [
+              SizedBox(height: SizeConfig.safeBlockVertical * 3),
+              AppTitle(),
+              SizedBox(height: SizeConfig.safeBlockVertical * 3),
+              Text(
+                "Tạo tài khoản",
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 30, fontWeight: FontWeight.w700),
+              ),
+              SizedBox(height: SizeConfig.safeBlockVertical),
+              SizedBox(child: buildLoginWidget(), width: SizeConfig.safeBlockHorizontal * 85),
+              SizedBox(height: SizeConfig.safeBlockVertical),
+              SizedBox(child: buildOtherMethodWidget(), width: SizeConfig.safeBlockHorizontal * 80),
+              SizedBox(height: SizeConfig.safeBlockVertical * 3),
+            ],
+          ),
         ),
       ),
     );
@@ -60,9 +58,16 @@ class _LoginState extends State<Login> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(height: SizeConfig.safeBlockVertical * 2),
-          Text("Số điện thoại", style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
+          Text("Tên", style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
           TextFieldView(
             name: "user_name",
+            hintText: "Bắt buộc",
+            validator: FormBuilderValidators.required(context),
+            type: 'text_field',
+          ),
+          Text("Số điện thoại", style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
+          TextFieldView(
+            name: "phone",
             hintText: "Bắt buộc",
             validator: FormBuilderValidators.required(context),
             type: 'text_field',
@@ -75,37 +80,24 @@ class _LoginState extends State<Login> {
             validator: FormBuilderValidators.required(context),
             type: 'password',
           ),
-          SizedBox(height: SizeConfig.safeBlockVertical * 3),
-          Center(
-            child: GestureDetector(
-              onTap: () => print("aa"),
-              behavior: HitTestBehavior.translucent,
-              child: Text(
-                "Quên mật khẩu?",
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      color: AppColor.accentColor,
-                      decoration: TextDecoration.underline,
-                    ),
-              ),
-            ),
+          Text("Xác nhận mật khẩu", style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
+          TextFieldView(
+            name: 'password',
+            hintText: "Bắt buộc",
+            validator: FormBuilderValidators.required(context),
+            type: 'password',
           ),
-          SizedBox(height: SizeConfig.safeBlockVertical * 3),
+          SizedBox(height: SizeConfig.safeBlockVertical),
           ButtonTheme(
             minWidth: SizeConfig.safeBlockHorizontal * 55,
             height: 45.0,
-            child: BlocBuilder<LoginCubit, LoginState>(
+            child: BlocBuilder<SignupCubit, SignupState>(
               bloc: _cubit,
               builder: (context, state) {
                 return AbsorbPointer(
                   absorbing: state is Signing,
                   child: CommonButton(
-                      onPressed: () async {
-                        _fbKey.currentState!.saveAndValidate()
-                            ? await _cubit.login(_fbKey.currentState!.value)
-                                ? Modular.to.pushReplacementNamed(AppModule.home)
-                                : Application.toast.showToastNotification("Wrong User Name or Password")
-                            : Application.toast.showToastNotification("Invalid Value");
-                      },
+                      onPressed: () async {},
                       backgroundColor: AppColor.accentColor,
                       child: Container(
                         alignment: Alignment.center,
@@ -135,7 +127,7 @@ class _LoginState extends State<Login> {
 
   Widget buildOtherMethodWidget() => Column(
         children: [
-          SizedBox(height: SizeConfig.safeBlockVertical * 3),
+          SizedBox(height: SizeConfig.safeBlockVertical),
           Text(
             "Hoặc",
             style: Theme.of(context).textTheme.bodyText1!.copyWith(
@@ -143,7 +135,7 @@ class _LoginState extends State<Login> {
                   fontWeight: FontWeight.w700,
                 ),
           ),
-          SizedBox(height: SizeConfig.safeBlockVertical * 3),
+          SizedBox(height: SizeConfig.safeBlockVertical),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -169,9 +161,9 @@ class _LoginState extends State<Login> {
           SizedBox(height: SizeConfig.safeBlockVertical * 2),
           GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: () => Modular.to.pushNamed(AppModule.signup),
+            onTap: Navigator.of(context).pop,
             child: Text(
-              "Đăng ký",
+              "Đăng nhập",
               style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12, color: Color(0xFFDB3E00)),
             ),
           ),

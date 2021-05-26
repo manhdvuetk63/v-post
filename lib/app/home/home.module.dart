@@ -5,6 +5,7 @@ import 'package:v_post/app/home/profile/profile.module.dart';
 
 class HomeModule extends Module {
   static String profile = "/profile";
+  static String delivery = "/delivery";
 
   @override
   final List<Bind> binds = [
