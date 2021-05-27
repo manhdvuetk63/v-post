@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:v_post/app/components/app-title/app-title.component.dart';
+import 'package:v_post/app/components/appbar/appbar.component.dart';
 import 'package:v_post/app/components/common-button/common-button.component.dart';
 import 'package:v_post/app/components/text-field/text-field.component.dart';
 import 'package:v_post/app/signup/signup.cubit.dart';
@@ -24,14 +25,14 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: staticAppbar(title: AppTitle()),
       backgroundColor: AppColor.white,
       body: SingleChildScrollView(
         child: Container(
+          alignment: Alignment.center,
           padding: EdgeInsets.all(15),
           child: Column(
             children: [
-              SizedBox(height: SizeConfig.safeBlockVertical * 3),
-              AppTitle(),
               SizedBox(height: SizeConfig.safeBlockVertical * 3),
               Text(
                 "Tạo tài khoản",

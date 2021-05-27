@@ -45,7 +45,7 @@ class TextFieldState extends State<TextFieldView> {
                     maxLines: 1,
                     name: widget.name,
                     initialValue: widget.initialValue,
-                    style: const TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 14),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         hintText: widget.hintText,
@@ -66,6 +66,10 @@ class TextFieldState extends State<TextFieldView> {
                           borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
                           borderRadius: BorderRadius.circular(13),
                         ),
+                        disabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
+                          borderRadius: BorderRadius.circular(13),
+                        ),
                         suffixIcon: IconButton(
                           icon: hasShowPassword ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
                           onPressed: _cubit.toggleIconPassword,
@@ -82,7 +86,7 @@ class TextFieldState extends State<TextFieldView> {
                 maxLines: 1,
                 initialValue: widget.initialValue,
                 name: widget.name,
-                style: const TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 14),
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(horizontal: 10),
                   hintText: widget.hintText,
@@ -101,6 +105,10 @@ class TextFieldState extends State<TextFieldView> {
                   ),
                   focusedErrorBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  disabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
                     borderRadius: BorderRadius.circular(13),
                   ),
                   prefixIcon: widget.prefixIcon,
