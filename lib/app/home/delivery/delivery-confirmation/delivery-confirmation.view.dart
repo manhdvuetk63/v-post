@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_modular/flutter_modular.dart';
-import 'package:v_post/app/app.module.dart';
 import 'package:v_post/app/components/app-title/app-title.component.dart';
 import 'package:v_post/app/components/appbar/appbar.component.dart';
 import 'package:v_post/app/components/common-button/common-button.component.dart';
 import 'package:v_post/app/components/text-field/text-field.component.dart';
-import 'package:v_post/app/home/delivery/delivery.module.dart';
-import 'package:v_post/app/home/home.module.dart';
 import 'package:v_post/config/config_screen.dart';
 import 'package:v_post/themes/style.dart';
 
@@ -19,14 +15,14 @@ class _NestedData {
   _NestedData({required this.name, required this.hintText, required this.icon});
 }
 
-class DeliveryWidget extends StatefulWidget {
-  const DeliveryWidget({Key? key}) : super(key: key);
+class DeliveryConfirmationWidget extends StatefulWidget {
+  const DeliveryConfirmationWidget({Key? key}) : super(key: key);
 
   @override
-  _DeliveryWidgetState createState() => _DeliveryWidgetState();
+  _DeliveryConfirmationWidgetState createState() => _DeliveryConfirmationWidgetState();
 }
 
-class _DeliveryWidgetState extends State<DeliveryWidget> {
+class _DeliveryConfirmationWidgetState extends State<DeliveryConfirmationWidget> {
   GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
 
   List<MapEntry<String, List<_NestedData>>> _allForm = [
@@ -47,12 +43,12 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
       ],
     ),
     MapEntry(
-      "Hàng hoá",
+      "Thông tin",
       [
-        _NestedData(name: "package_name", hintText: "Tên hàng hóa", icon: Icon(Icons.all_inbox_outlined)),
-        _NestedData(name: "package_price", hintText: "Giá trị", icon: Icon(Icons.attach_money_outlined)),
-        _NestedData(name: "package_weight", hintText: "Khối lượng (gam)", icon: Icon(Icons.line_weight_outlined)),
-        _NestedData(name: "package_description", hintText: "Mô tả", icon: Icon(Icons.description_outlined)),
+        _NestedData(name: "picking_date", hintText: "Ngày lấy hàng", icon: Icon(Icons.calendar_today_outlined)),
+        _NestedData(name: "receive_date", hintText: "Ngày nhận", icon: Icon(Icons.calendar_today_outlined)),
+        _NestedData(name: "distance", hintText: "Khoảng cách", icon: Icon(Icons.social_distance_outlined)),
+        _NestedData(name: "fee", hintText: "Giá vận chuyển", icon: Icon(Icons.attach_money_outlined)),
       ],
     ),
   ];
@@ -62,12 +58,26 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
     return Scaffold(
       appBar: staticAppbar(
         title: AppTitle(),
+        leading: BackButtonWidget(),
       ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(5),
           child: FormBuilder(
             key: _fbKey,
+            enabled: false,
+            initialValue: {
+              "sender_name": "Đỗ Vân",
+              "sender_phone": "0915919357",
+              "sender_address": "144 Xuân Thủy",
+              "receiver_name": "Đỗ Vân",
+              "receiver_phone": "0915919357",
+              "receiver_address": "144 Xuân Thủy",
+              "picking_date": " 13/2/2021",
+              "receive_date": " 14/2/2021",
+              "distance": " 10 km",
+              "fee": " 75.000 VND",
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -82,14 +92,10 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                 Align(
                   alignment: Alignment.center,
                   child: CommonButton(
-                    onPressed: () => Modular.to.pushNamed(AppModule.home + HomeModule.delivery + DeliveryModule.deliveryConfirmation),
+                    onPressed: () {},
                     child: Text(
-                      "Tiếp theo",
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: AppColor.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
+                      "Gửi yêu cầu",
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColor.white, fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     backgroundColor: AppColor.accentColor,
                   ),
@@ -115,44 +121,51 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                 style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColor.accentColor, fontWeight: FontWeight.w600, fontSize: 20),
               ),
             ),
-            ...data.map(
-              (e) => e.hintText != "Địa chỉ"
-                  ? TextFieldView(name: e.name, type: 'text_field', hintText: e.hintText, prefixIcon: e.icon)
-                  : buildCustomAddressForm(e),
-            ),
+            ...title != "Thông tin"
+                ? data.map((e) => TextFieldView(
+                      name: e.name,
+                      type: 'text_field',
+                      hintText: e.hintText,
+                      prefixIcon: e.icon,
+                    ))
+                : data.map((e) => buildCustomInformationForm(e)),
           ],
         ),
       );
 
-  Widget buildCustomAddressForm(_NestedData e) => Padding(
+  Widget buildCustomInformationForm(_NestedData e) => Padding(
         padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical),
         child: FormBuilderTextField(
           name: e.name,
           maxLines: 1,
-          style: const TextStyle(fontSize: 18),
+          style: TextStyle(fontSize: 14),
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(horizontal: 10),
-            hintText: e.hintText,
-            hintStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Color(0xFF7A7A7A)),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
-              borderRadius: BorderRadius.circular(13),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
-              borderRadius: BorderRadius.circular(13),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
-              borderRadius: BorderRadius.circular(13),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
-              borderRadius: BorderRadius.circular(13),
-            ),
-            prefixIcon: e.icon,
-          ),
-          onTap: () => Modular.to.pushNamed(AppModule.home + HomeModule.delivery + DeliveryModule.placePicking),
+              contentPadding: EdgeInsets.symmetric(horizontal: 10),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              prefixIcon: e.icon,
+              prefixText: "${e.hintText}:",
+              prefixStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    fontWeight: FontWeight.w700,
+                  )),
           keyboardType: TextInputType.text,
           validator: FormBuilderValidators.required(context),
         ),

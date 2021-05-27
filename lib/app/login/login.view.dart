@@ -4,9 +4,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:v_post/app/app.module.dart';
 import 'package:v_post/app/components/app-title/app-title.component.dart';
+import 'package:v_post/app/components/appbar/appbar.component.dart';
 import 'package:v_post/app/components/common-button/common-button.component.dart';
 import 'package:v_post/app/components/text-field/text-field.component.dart';
 import 'package:v_post/app/login/login.cubit.dart';
@@ -28,13 +28,13 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: staticAppbar(title: AppTitle()),
       backgroundColor: AppColor.white,
       body: Container(
+        alignment: Alignment.center,
         padding: EdgeInsets.all(15),
         child: Column(
           children: [
-            Spacer(flex: 2),
-            AppTitle(),
             Spacer(flex: 2),
             Text(
               "Đăng nhập",

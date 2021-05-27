@@ -11,12 +11,13 @@ PreferredSizeWidget staticAppbar(
         double? titleSpacing,
         bool? centerTitle}) =>
     AppBar(
+      elevation: 0,
       toolbarHeight: height,
-      backgroundColor: Color(0xFF00B59C),
+      backgroundColor: Colors.white,
       title: title,
       centerTitle: centerTitle,
       actions: actions,
-      automaticallyImplyLeading: true,
+      automaticallyImplyLeading: false,
       leading: leading,
       bottom: bottomWidget,
       titleSpacing: titleSpacing ?? NavigationToolbar.kMiddleSpacing,

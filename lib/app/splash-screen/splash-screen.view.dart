@@ -23,13 +23,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void navigationPage() => Application.sharePreference.hasKey('authToken') && Application.sharePreference.hasKey('userId')
       ? Modular.to.pushReplacementNamed(AppModule.home)
-      : Modular.to.pushReplacementNamed(AppModule.login);
+      : Modular.to.pushReplacementNamed(AppModule.home);
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
       body: Container(
+        alignment: Alignment.center,
         child: LoadingDots(numberDots: 5),
       ),
     );
