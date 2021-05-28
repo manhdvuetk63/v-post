@@ -7,9 +7,9 @@ import 'package:v_post/config/config_screen.dart';
 
 part 'home.state.dart';
 
-class HomeCubit extends Cubit<HomeState> {
+class UserHomeCubit extends Cubit<UserHomeState> {
   double scrollOffset = 0;
-  HomeCubit() : super(HomeInitial()) {}
+  UserHomeCubit() : super(UserHomeInitial()) {}
 
   void scrollListener(ScrollController _scrollController) {
     scrollOffset = math.min(_scrollController.offset, SizeConfig.safeBlockVertical * 22 * 0.88);

@@ -102,7 +102,7 @@ class _LoginState extends State<Login> {
                       onPressed: () async {
                         _fbKey.currentState!.saveAndValidate()
                             ? await _cubit.login(_fbKey.currentState!.value)
-                                ? Modular.to.pushReplacementNamed(AppModule.home)
+                                ? Modular.to.pushReplacementNamed(AppModule.switching)
                                 : Application.toast.showToastNotification("Wrong User Name or Password")
                             : Application.toast.showToastNotification("Invalid Value");
                       },

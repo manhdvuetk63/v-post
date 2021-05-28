@@ -22,8 +22,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<Timer> startTime() async => Timer(Duration(milliseconds: 1500), navigationPage);
 
   void navigationPage() => Application.sharePreference.hasKey('authToken') && Application.sharePreference.hasKey('userId')
-      ? Modular.to.pushReplacementNamed(AppModule.home)
-      : Modular.to.pushReplacementNamed(AppModule.home);
+      ? Modular.to.pushReplacementNamed(AppModule.switching)
+      : Modular.to.pushReplacementNamed(AppModule.login);
 
   @override
   Widget build(BuildContext context) {
