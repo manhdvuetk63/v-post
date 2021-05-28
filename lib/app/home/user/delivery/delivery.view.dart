@@ -6,8 +6,8 @@ import 'package:v_post/app/components/app-title/app-title.component.dart';
 import 'package:v_post/app/components/appbar/appbar.component.dart';
 import 'package:v_post/app/components/common-button/common-button.component.dart';
 import 'package:v_post/app/components/text-field/text-field.component.dart';
-import 'package:v_post/app/home/delivery/delivery.module.dart';
-import 'package:v_post/app/home/home.module.dart';
+import 'package:v_post/app/home/user/delivery/delivery.module.dart';
+import 'package:v_post/app/home/user/home.module.dart';
 import 'package:v_post/config/config_screen.dart';
 import 'package:v_post/themes/style.dart';
 
@@ -82,7 +82,8 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                 Align(
                   alignment: Alignment.center,
                   child: CommonButton(
-                    onPressed: () => Modular.to.pushNamed(AppModule.home + HomeModule.delivery + DeliveryModule.deliveryConfirmation),
+                    onPressed: () => Modular.to
+                        .pushNamed(AppModule.user + UserHomeModule.delivery + UserHomeModule.delivery + DeliveryModule.deliveryConfirmation),
                     child: Text(
                       "Tiếp theo",
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(
@@ -152,7 +153,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
             ),
             prefixIcon: e.icon,
           ),
-          onTap: () => Modular.to.pushNamed(AppModule.home + HomeModule.delivery + DeliveryModule.placePicking),
+          onTap: () => Modular.to.pushNamed(AppModule.user + UserHomeModule.delivery + DeliveryModule.placePicking),
           keyboardType: TextInputType.text,
           validator: FormBuilderValidators.required(context),
         ),

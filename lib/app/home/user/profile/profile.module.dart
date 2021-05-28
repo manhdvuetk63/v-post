@@ -1,5 +1,5 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:v_post/app/home/profile/profile.view.dart';
+import 'package:v_post/app/home/user/profile/profile.view.dart';
 class ProfileModule extends Module {
   @override
   final List<Bind> binds = [];
