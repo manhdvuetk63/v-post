@@ -45,6 +45,7 @@ flutter:
     - assets/images/home/
     - assets/images/login/
     - assets/images/appbar/
+    - assets/images/icon/
 
 
   fonts:
