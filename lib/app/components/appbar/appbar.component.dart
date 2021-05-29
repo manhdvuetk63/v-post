@@ -21,11 +21,6 @@ PreferredSizeWidget staticAppbar(
       leading: leading,
       bottom: bottomWidget,
       titleSpacing: titleSpacing ?? NavigationToolbar.kMiddleSpacing,
-      // flexibleSpace: Container(
-      //   decoration: BoxDecoration(
-      //     gradient: LinearGradient(begin: Alignment.centerLeft, end: Alignment.centerRight, colors: [Color(0xFF00B59C), Color(0xFF056F83)]),
-      //   ),
-      // ),
     );
 
 class BackButtonWidget extends StatelessWidget {

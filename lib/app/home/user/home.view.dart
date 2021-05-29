@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:v_post/app/home/user/delivery/delivery.module.dart';
+import 'package:v_post/app/home/user/history/history.view.dart';
 import 'package:v_post/app/home/user/home.module.dart';
+import 'package:v_post/app/home/user/profile/profile.view.dart';
 
 class UserHomeWidget extends StatefulWidget {
   const UserHomeWidget({Key? key}) : super(key: key);
@@ -12,8 +14,8 @@ class UserHomeWidget extends StatefulWidget {
 class _UserHomeWidgetState extends State<UserHomeWidget> {
   List<Map<String, dynamic>> _mainModules = [
     {'icon': Icon(Icons.local_shipping_outlined), 'label': 'Giao hàng', 'widget': DeliveryModule(), 'route': UserHomeModule.delivery},
-    {'icon': Icon(Icons.bar_chart_outlined), 'label': 'Lịch sử', 'widget': Container(), 'route': ""},
-    {'icon': Icon(Icons.person_outlined), 'label': 'Cá nhân', 'widget': Container(), 'route': UserHomeModule.profile},
+    {'icon': Icon(Icons.bar_chart_outlined), 'label': 'Lịch sử', 'widget': HistoryWidget(), 'route': UserHomeModule.history},
+    {'icon': Icon(Icons.person_outlined), 'label': 'Cá nhân', 'widget': ProfileWidget(), 'route': UserHomeModule.profile},
   ];
 
   int _selectIndex = 0;
