@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_modular/flutter_modular.dart';
-import 'package:v_post/app/components/appbar/appbar.component.dart';
 import 'package:v_post/app/home/user/delivery/place-picking/place-picking.cubit.dart';
 import 'package:v_post/config/config_screen.dart';
 import 'package:wemapgl/wemapgl.dart';
@@ -33,7 +30,7 @@ class _PlacePickingState extends State<PlacePicking> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  padding: EdgeInsets.only(left: 10,right: 20),
+                  padding: EdgeInsets.only(left: 10, right: 20),
                   height: SizeConfig.blockSizeVertical * 40,
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -75,17 +72,19 @@ class _PlacePickingState extends State<PlacePicking> {
                               ),
                               Text(
                                 'Vị trí của tôi',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 18),
+                                style: TextStyle(color: Colors.black, fontSize: 18),
                               )
                             ],
                           )),
                       Container(
-                        height: SizeConfig.safeBlockVertical*20,
+                        height: SizeConfig.safeBlockVertical * 20,
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              Divider(color: Colors.grey,height: 1,),
+                              Divider(
+                                color: Colors.grey,
+                                height: 1,
+                              ),
                               TextButton(
                                   onPressed: () {},
                                   child: Row(
@@ -96,8 +95,7 @@ class _PlacePickingState extends State<PlacePicking> {
                                       ),
                                       Text(
                                         'Vị trí của tôi',
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 18),
+                                        style: TextStyle(color: Colors.black, fontSize: 18),
                                       )
                                     ],
                                   )),
@@ -112,8 +110,7 @@ class _PlacePickingState extends State<PlacePicking> {
                                       ),
                                       Text(
                                         'Vị trí của tôi',
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 18),
+                                        style: TextStyle(color: Colors.black, fontSize: 18),
                                       )
                                     ],
                                   )),
@@ -128,8 +125,7 @@ class _PlacePickingState extends State<PlacePicking> {
                                       ),
                                       Text(
                                         'Vị trí của tôi',
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 18),
+                                        style: TextStyle(color: Colors.black, fontSize: 18),
                                       )
                                     ],
                                   )),
@@ -144,8 +140,7 @@ class _PlacePickingState extends State<PlacePicking> {
                                       ),
                                       Text(
                                         'Vị trí của tôi',
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 18),
+                                        style: TextStyle(color: Colors.black, fontSize: 18),
                                       )
                                     ],
                                   ))
@@ -153,7 +148,6 @@ class _PlacePickingState extends State<PlacePicking> {
                           ),
                         ),
                       )
-
                     ],
                   ),
                 ),
@@ -183,7 +177,6 @@ class _PlacePickingState extends State<PlacePicking> {
               ),
               destinationIcon: "assets/images/icon/destination.png",
             ),
-
           ],
         ));
   }

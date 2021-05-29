@@ -22,7 +22,7 @@ class CommonButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       child: Container(
-        width: width ?? SizeConfig.safeBlockHorizontal * 80,
+        width: width ?? SizeConfig.safeBlockHorizontal * 90,
         height: height ?? 30,
         alignment: Alignment.center,
         child: child,
