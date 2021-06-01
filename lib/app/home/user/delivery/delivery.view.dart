@@ -82,8 +82,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                 Align(
                   alignment: Alignment.center,
                   child: CommonButton(
-                    onPressed: () => Modular.to
-                        .pushNamed(AppModule.user + UserHomeModule.delivery + UserHomeModule.delivery + DeliveryModule.deliveryConfirmation),
+                    onPressed: () => Modular.to.pushNamed(AppModule.user + UserHomeModule.delivery + DeliveryModule.deliveryConfirmation),
                     child: Text(
                       "Tiếp theo",
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(
@@ -153,7 +152,8 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
             ),
             prefixIcon: e.icon,
           ),
-          onTap: () => Modular.to.pushNamed(AppModule.user + UserHomeModule.delivery + DeliveryModule.placePicking),
+          // Todo: uncomment to navigate to place picking.
+          // onTap: () => Modular.to.pushNamed(AppModule.user + UserHomeModule.delivery + DeliveryModule.placePicking),
           keyboardType: TextInputType.text,
           validator: FormBuilderValidators.required(context),
         ),
