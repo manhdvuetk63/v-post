@@ -1,9 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:v_post/app/components/app-title/app-title.component.dart';
 import 'package:v_post/app/components/appbar/appbar.component.dart';
 import 'package:v_post/app/components/text-field/text-field.component.dart';
+import 'package:v_post/app/home/shared/delivery-detail/delivery-detail.cubit.dart';
 import 'package:v_post/config/config_screen.dart';
+import 'package:v_post/service/delivery/delivery.service.dart';
 import 'package:v_post/themes/style.dart';
 
 class _NestedData {
@@ -16,15 +20,23 @@ class _NestedData {
 
 class DeliveryDetail extends StatefulWidget {
   final bool hasRating;
+  final int? orderId;
 
-  const DeliveryDetail({Key? key, this.hasRating = false}) : super(key: key);
+  const DeliveryDetail({Key? key, this.hasRating = false, this.orderId}) : super(key: key);
 
   @override
   _DeliveryDetailState createState() => _DeliveryDetailState();
 }
 
 class _DeliveryDetailState extends State<DeliveryDetail> {
+  DeliveryDetailCubit _cubit = DeliveryDetailCubit(DeliveryService());
   GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
+
+  @override
+  void initState() {
+    _cubit.getOrderDetail(widget.orderId ?? 0);
+    super.initState();
+  }
 
   List<MapEntry<String, List<_NestedData>>> _allForm = [
     MapEntry(
@@ -52,9 +64,9 @@ class _DeliveryDetailState extends State<DeliveryDetail> {
         _NestedData(name: "receive_date", hintText: "Ngày nhận", icon: Icon(Icons.calendar_today_outlined)),
         _NestedData(name: "name", hintText: "Tên hàng hoá", icon: Icon(Icons.all_inbox_outlined)),
         _NestedData(name: "fee", hintText: "Giá vận chuyển", icon: Icon(Icons.attach_money_outlined)),
-        _NestedData(name: "rider", hintText: "Tài xế giao", icon: Icon(Icons.person_outlined)),
-        _NestedData(name: "phone", hintText: "Số điện thoại", icon: Icon(Icons.call_outlined)),
         _NestedData(name: "status", hintText: "Trạng thái", icon: Icon(Icons.loop_outlined)),
+        _NestedData(name: "rider", hintText: "Shipper", icon: Icon(Icons.person_outlined)),
+        _NestedData(name: "phone", hintText: "Số điện thoại", icon: Icon(Icons.call_outlined)),
       ],
     ),
   ];
@@ -62,46 +74,56 @@ class _DeliveryDetailState extends State<DeliveryDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: staticAppbar(
-        title: AppTitle(),
-        leading: BackButtonWidget(),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(5),
-          child: FormBuilder(
-            key: _fbKey,
-            enabled: false,
-            initialValue: {
-              "sender_name": "Đỗ Vân",
-              "sender_phone": "0915919357",
-              "sender_address": "144 Xuân Thủy",
-              "receiver_name": "Đỗ Vân",
-              "receiver_phone": "0915919357",
-              "receiver_address": "144 Xuân Thủy",
-              "picking_date": " 13/2/2021",
-              "receive_date": " 14/2/2021",
-              "order_date": " 116/03/2021 | 8:12 AM",
-              "code": " 222222222",
-              "name": " Giấy tờ",
-              "rider": " Phong/ Chưa có tài xế",
-              "phone": " 0915919357",
-              "status": " Đã giao",
-              "fee": " 75.000 VND",
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                Text(
-                  "Chi tiết đơn hàng",
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700, fontSize: 30),
-                ),
-                SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                ..._allForm.map((e) => buildGroupTextField(title: e.key, data: e.value)),
-                SizedBox(height: SizeConfig.safeBlockVertical * 5),
-              ],
-            ),
+        appBar: staticAppbar(
+          title: AppTitle(),
+          leading: BackButtonWidget(),
+        ),
+        body: BlocBuilder(
+            bloc: _cubit,
+            buildWhen: (previous, current) => current is OrderLoaded || current is OrderLoading,
+            builder: (context, state) => (state is OrderLoaded) ? _buildBody() : Center(child: CupertinoActivityIndicator(radius: 20))));
+  }
+
+  Widget _buildBody() {
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(5),
+        child: FormBuilder(
+          key: _fbKey,
+          enabled: false,
+          initialValue: {
+            "sender_name": _cubit.order!.senderName,
+            "sender_phone": _cubit.order!.senderPhone,
+            "sender_address": _cubit.order!.senderAddress,
+            "receiver_name": _cubit.order!.receiverName,
+            "receiver_phone": _cubit.order!.receiverPhone,
+            "receiver_address": _cubit.order!.receiverAddress,
+            "picking_date": _cubit.order!.sentDateReal?.toString().substring(0,10) ?? "Chưa lấy hàng",
+            "receive_date": _cubit.order!.receivedDateReal?.toString().substring(0,10) ?? "Chưa nhận hàng",
+            "order_date": _cubit.order!.orderedDate.toString().substring(0,10),
+            "code": _cubit.order!.orderNo,
+            "name": _cubit.order!.item,
+            "rider": _cubit.order!.account?.name ?? "",
+            "phone": _cubit.order!.account?.phone,
+            "status": _cubit.order!.status == 0
+                ? "Chưa có shipper"
+                : _cubit.order!.status == 1
+                    ? "Đã có shipper"
+                    : "Đã giao hàng",
+            "fee": _cubit.order!.fee,
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: SizeConfig.safeBlockVertical * 2),
+              Text(
+                "Chi tiết đơn hàng",
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700, fontSize: 30),
+              ),
+              SizedBox(height: SizeConfig.safeBlockVertical * 2),
+              ..._allForm.map((e) => buildGroupTextField(title: e.key, data: e.value)),
+              SizedBox(height: SizeConfig.safeBlockVertical * 5),
+            ],
           ),
         ),
       ),

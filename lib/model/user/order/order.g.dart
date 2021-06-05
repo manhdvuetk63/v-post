@@ -18,6 +18,18 @@ Map<String, dynamic> _$OrdersToJson(Orders instance) => <String, dynamic>{
       'orders': instance.orders?.map((e) => e.toJson()).toList(),
     };
 
+Accounts _$AccountsFromJson(Map<String, dynamic> json) {
+  return Accounts(
+    accounts: (json['accounts'] as List<dynamic>?)
+        ?.map((e) => Account.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$AccountsToJson(Accounts instance) => <String, dynamic>{
+      'accounts': instance.accounts?.map((e) => e.toJson()).toList(),
+    };
+
 Order _$OrderFromJson(Map<String, dynamic> json) {
   return Order(
     id: json['id'] as int?,
@@ -94,6 +106,8 @@ Account _$AccountFromJson(Map<String, dynamic> json) {
     password: json['password'] as String?,
     address: json['address'] as String?,
     type: json['type'] as int?,
+    email: json['email'] as String?,
+    rate: (json['rate'] as num?)?.toDouble(),
   );
 }
 
@@ -103,5 +117,7 @@ Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'phone': instance.phone,
       'password': instance.password,
       'address': instance.address,
+      'email': instance.email,
+      'rate': instance.rate,
       'type': instance.type,
     };

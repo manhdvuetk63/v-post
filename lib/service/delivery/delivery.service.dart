@@ -19,12 +19,20 @@ class DeliveryService {
         : throw NetworkException(message: Map<String, dynamic>.from("get false" as Map<String, dynamic>));
   }
 
+  Future<Orders> getOrderByShipperIdAndStatus(Map<String, dynamic> params) async {
+    final response = await DeliveryRepository.getOrderByShipperIdAndStatus(params);
+    return (response.statusCode == 200)
+        ? Orders.fromJson(response.data as Map<String, dynamic>)
+        : throw NetworkException(message: Map<String, dynamic>.from("get false" as Map<String, dynamic>));
+  }
+
   Future<Order> getOrderDetail(int params) async {
     final response = await DeliveryRepository.getOrderDetail(params);
     return (response.statusCode == 200)
         ? Order.fromJson(response.data as Map<String, dynamic>)
         : throw NetworkException(message: Map<String, dynamic>.from("get false" as Map<String, dynamic>));
   }
+
   Future<Orders> getOrderByStatus(int params) async {
     final response = await DeliveryRepository.getOrderByStatus(params);
     return (response.statusCode == 200)

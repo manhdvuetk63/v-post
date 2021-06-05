@@ -14,6 +14,17 @@ class Orders {
 }
 
 @JsonSerializable(includeIfNull: true, explicitToJson: true)
+class Accounts {
+  List<Account>? accounts;
+
+  Accounts({this.accounts});
+
+  factory Accounts.fromJson(Map<String, dynamic> json) => _$AccountsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AccountsToJson(this);
+}
+
+@JsonSerializable(includeIfNull: true, explicitToJson: true)
 class Order {
   int? id;
   String? item;
@@ -76,9 +87,11 @@ class Account {
   String? phone;
   String? password;
   String? address;
+  String? email;
+  double? rate;
   int? type;
 
-  Account({this.id, this.name, this.phone, this.password, this.address, this.type});
+  Account({this.id, this.name, this.phone, this.password, this.address, this.type, this.email, this.rate});
 
   factory Account.fromJson(Map<String, dynamic> json) => _$AccountFromJson(json);
 

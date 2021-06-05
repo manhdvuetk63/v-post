@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:v_post/app/home/admin/shipper-list/shipper-list.view.dart';
 import 'package:v_post/app/home/shared/profile/profile.view.dart';
 import 'package:v_post/app/home/shipper/history/history.view.dart';
 import 'package:v_post/app/home/shipper/home.module.dart';

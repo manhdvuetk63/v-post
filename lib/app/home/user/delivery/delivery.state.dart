@@ -11,3 +11,21 @@ class DeliveryInitial extends DeliveryState {
   @override
   List<Object> get props => [];
 }
+class Create extends DeliveryState {
+  const Create();
+
+  @override
+  List<Object> get props => [];
+}
+class Created extends DeliveryState {
+  const Created();
+
+  @override
+  List<Object> get props => [];
+}
+class CreateFalse extends DeliveryState {
+  const CreateFalse();
+
+  @override
+  List<Object> get props => [];
+}

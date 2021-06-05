@@ -12,7 +12,9 @@ class SharedModule extends Module {
   // Provide all the routes for your module
   @override
   final List<ModularRoute> routes = [
-    ChildRoute(detailDelivery, child: (context, args) => DeliveryDetail()),
+    ChildRoute(detailDelivery, child: (context, args) {
+      return DeliveryDetail(orderId: int.parse(args.data.toString()));
+    }),
     ChildRoute(profile, child: (context, args) => ProfileWidget()),
   ];
 }

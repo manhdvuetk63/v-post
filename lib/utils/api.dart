@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:v_post/config/application.dart';
 
 class API {
-  static String baseUrl = "https://ktdg.saokhuee.com";
+  static String baseUrl = "http://192.168.31.29:9000";
 
   final Dio dio = Dio(
     BaseOptions(
@@ -38,6 +38,7 @@ class API {
         onError: (DioError e, ErrorInterceptorHandler handler) async {
           handleTimeOutException(e.type);
           // Refresh Token
+          print(e);
           return handler.resolve(e.response!); //continue
         },
       ),

@@ -1,10 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:v_post/app/components/app-title/app-title.component.dart';
 import 'package:v_post/app/components/appbar/appbar.component.dart';
 import 'package:v_post/app/components/common-button/common-button.component.dart';
 import 'package:v_post/app/components/text-field/text-field.component.dart';
+import 'package:v_post/app/home/user/delivery/delivery.cubit.dart';
+import 'package:v_post/config/application.dart';
 import 'package:v_post/config/config_screen.dart';
+import 'package:v_post/model/user/order/order.dart';
+import 'package:v_post/service/delivery/delivery.service.dart';
 import 'package:v_post/themes/style.dart';
 
 class _NestedData {
@@ -16,13 +23,22 @@ class _NestedData {
 }
 
 class DeliveryConfirmationWidget extends StatefulWidget {
-  const DeliveryConfirmationWidget({Key? key}) : super(key: key);
+  final Order? order;
+
+  const DeliveryConfirmationWidget({Key? key, this.order}) : super(key: key);
 
   @override
   _DeliveryConfirmationWidgetState createState() => _DeliveryConfirmationWidgetState();
 }
 
 class _DeliveryConfirmationWidgetState extends State<DeliveryConfirmationWidget> {
+  @override
+  void initState() {
+    print(widget.order!.toJson());
+    super.initState();
+  }
+
+  DeliveryCubit _cubit = DeliveryCubit(DeliveryService());
   GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
 
   List<MapEntry<String, List<_NestedData>>> _allForm = [
@@ -45,10 +61,14 @@ class _DeliveryConfirmationWidgetState extends State<DeliveryConfirmationWidget>
     MapEntry(
       "Thông tin",
       [
-        _NestedData(name: "picking_date", hintText: "Ngày lấy hàng", icon: Icon(Icons.calendar_today_outlined)),
-        _NestedData(name: "receive_date", hintText: "Ngày nhận", icon: Icon(Icons.calendar_today_outlined)),
-        _NestedData(name: "distance", hintText: "Khoảng cách", icon: Icon(Icons.social_distance_outlined)),
-        _NestedData(name: "fee", hintText: "Giá vận chuyển", icon: Icon(Icons.attach_money_outlined)),
+        _NestedData(name: "package_name", hintText: "Tên hàng hóa", icon: Icon(Icons.all_inbox_outlined)),
+        _NestedData(name: "package_price", hintText: "Giá trị", icon: Icon(Icons.attach_money_outlined)),
+        _NestedData(name: "package_weight", hintText: "Khối lượng (kg) ", icon: Icon(Icons.line_weight_outlined)),
+        _NestedData(name: "package_description", hintText: "Mô tả ", icon: Icon(Icons.description_outlined)),
+        _NestedData(name: "picking_date", hintText: "Ngày lấy hàng dự kiến ", icon: Icon(Icons.calendar_today_outlined)),
+        _NestedData(name: "receive_date", hintText: "Ngày nhận dự kiến ", icon: Icon(Icons.calendar_today_outlined)),
+        _NestedData(name: "distance", hintText: "Khoảng cách ", icon: Icon(Icons.social_distance_outlined)),
+        _NestedData(name: "fee", hintText: "Giá vận chuyển ", icon: Icon(Icons.attach_money_outlined)),
       ],
     ),
   ];
@@ -67,14 +87,18 @@ class _DeliveryConfirmationWidgetState extends State<DeliveryConfirmationWidget>
             key: _fbKey,
             enabled: false,
             initialValue: {
-              "sender_name": "Đỗ Vân",
-              "sender_phone": "0915919357",
-              "sender_address": "144 Xuân Thủy",
-              "receiver_name": "Đỗ Vân",
-              "receiver_phone": "0915919357",
-              "receiver_address": "144 Xuân Thủy",
-              "picking_date": " 13/2/2021",
-              "receive_date": " 14/2/2021",
+              "sender_name": widget.order!.senderName,
+              "sender_phone": widget.order!.senderPhone,
+              "sender_address": widget.order!.senderAddress,
+              "receiver_name": widget.order!.receiverName,
+              "receiver_phone": widget.order!.receiverPhone,
+              "receiver_address": widget.order!.receiverAddress,
+              "package_name": widget.order!.item,
+              "package_price": widget.order!.value.toString(),
+              "package_weight": widget.order!.weight.toString(),
+              "package_description": widget.order!.description,
+              "picking_date": DateFormat('yyyy-MM-dd').format(widget.order!.orderedDate!.add(const Duration(days: 1))).toString(),
+              "receive_date": DateFormat('yyyy-MM-dd').format(widget.order!.orderedDate!.add(const Duration(days: 3))).toString(),
               "distance": " 10 km",
               "fee": " 75.000 VND",
             },
@@ -91,13 +115,30 @@ class _DeliveryConfirmationWidgetState extends State<DeliveryConfirmationWidget>
                 SizedBox(height: SizeConfig.safeBlockVertical * 5),
                 Align(
                   alignment: Alignment.center,
-                  child: CommonButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Gửi yêu cầu",
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColor.white, fontSize: 20, fontWeight: FontWeight.w700),
-                    ),
-                    backgroundColor: AppColor.accentColor,
+                  child: BlocConsumer(
+                    listener: (context, state) {
+                      (state is CreateFalse) ? Application.toast.showToastFailed("Thất bại") : Application.toast.showToastSuccess("Thành công");
+                    },
+                    bloc: _cubit,
+                    buildWhen: (previous, current) => current is Create || current is Created || current is CreateFalse,
+                    builder: (BuildContext context, state) {
+                      return (state is Create)
+                          ? Center(child: CupertinoActivityIndicator(radius: 20))
+                          : CommonButton(
+                              onPressed: () async {
+                                if (_fbKey.currentState!.saveAndValidate()) {
+                                  await _cubit.createOrder(_fbKey.currentState!.value);
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: Text(
+                                "Gửi yêu cầu",
+                                style:
+                                    Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColor.white, fontSize: 20, fontWeight: FontWeight.w700),
+                              ),
+                              backgroundColor: AppColor.accentColor,
+                            );
+                    },
                   ),
                 ),
                 SizedBox(height: SizeConfig.safeBlockVertical * 5),

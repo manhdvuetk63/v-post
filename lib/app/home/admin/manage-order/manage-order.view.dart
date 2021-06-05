@@ -1,31 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:v_post/app/app.module.dart';
 import 'package:v_post/app/components/app-title/app-title.component.dart';
 import 'package:v_post/app/components/appbar/appbar.component.dart';
+import 'package:v_post/app/components/expandable-fab/expandable-fab.component.dart';
+import 'package:v_post/app/home/admin/manage-order/manage-order.cubit.dart';
 import 'package:v_post/app/home/shared/shared.module.dart';
 import 'package:v_post/config/config_screen.dart';
+import 'package:v_post/model/user/order/order.dart';
+import 'package:v_post/service/delivery/delivery.service.dart';
 import 'package:v_post/themes/style.dart';
-
-class _NestedData {
-  int price;
-  int code;
-  String senderAddress;
-  String receiverAddress;
-  String status;
-  String customerName;
-
-  _NestedData({
-    required this.status,
-    required this.code,
-    required this.price,
-    required this.receiverAddress,
-    required this.senderAddress,
-    required this.customerName,
-  });
-}
 
 class ManageOrderWidget extends StatefulWidget {
   const ManageOrderWidget({Key? key}) : super(key: key);
@@ -35,64 +23,69 @@ class ManageOrderWidget extends StatefulWidget {
 }
 
 class _ManageOrderWidgetState extends State<ManageOrderWidget> {
-  List<_NestedData> _data = [
-    _NestedData(
-        status: "Đã có shipper(Thì hiện tên)/ Chưa có shipper",
-        code: 132422211,
-        price: 75000,
-        receiverAddress: "144 Xuân Thủy, Cầu Giấy",
-        senderAddress: "175 Láng Hạ",
-        customerName: "Đỗ Vân"),
-    _NestedData(
-        status: "Đã có shipper(Thì hiện tên)/ Chưa có shipper",
-        code: 132422211,
-        price: 75000,
-        receiverAddress: "144 Xuân Thủy, Cầu Giấy",
-        senderAddress: "175 Láng Hạ",
-        customerName: "Đỗ Vân"),
-    _NestedData(
-        status: "Đã có shipper(Thì hiện tên)/ Chưa có shipper",
-        code: 132422211,
-        price: 75000,
-        receiverAddress: "144 Xuân Thủy, Cầu Giấy",
-        senderAddress: "175 Láng Hạ",
-        customerName: "Đỗ Vân"),
-    _NestedData(
-        status: "Đã có shipper(Thì hiện tên)/ Chưa có shipper",
-        code: 132422211,
-        price: 75000,
-        receiverAddress: "144 Xuân Thủy, Cầu Giấy",
-        senderAddress: "175 Láng Hạ",
-        customerName: "Đỗ Vân"),
-  ];
+  ManageOrderCubit _cubit = ManageOrderCubit(DeliveryService());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: staticAppbar(title: AppTitle()),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: SizeConfig.safeBlockVertical * 2),
-              Text(
-                "Quản lý đơn hàng",
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700, fontSize: 30),
-              ),
-              ..._data.map((e) => buildCardWidget(
-                    data: e,
-                    onPressed: () => Modular.to.pushNamed(AppModule.shared + SharedModule.detailDelivery),
-                  ))
-            ],
+      body: BlocBuilder(
+        bloc: _cubit,
+        buildWhen: (previous, current) => current is OrdersLoaded || current is OrdersLoading,
+        builder: (context, state) {
+          return (state is OrdersLoaded)
+              ? SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                        Text(
+                          "Đơn hàng ${_cubit.status == 0 ? "chưa có shipper" : _cubit.status == 1 ? "đã có shipper" : "đã hoàn thành"}",
+                          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700, fontSize: 25),
+                        ),
+                        ..._cubit.orders!.orders!.map((e) => buildCardWidget(
+                              data: e,
+                              onPressed: () => Modular.to.pushNamed(AppModule.shared + SharedModule.detailDelivery, arguments: e.id),
+                            ))
+                      ],
+                    ),
+                  ),
+                )
+              : Center(child: CupertinoActivityIndicator(radius: 20));
+        },
+      ),
+      floatingActionButton: ExpandableFab(
+        distance: 112.0,
+        children: [
+          ActionButton(
+            onPressed: () async {
+              _cubit.status = 0;
+              await _cubit.getListOrderByStatus();
+            },
+            icon: const Icon(Icons.new_label),
           ),
-        ),
+          ActionButton(
+            onPressed: () async {
+              _cubit.status = 1;
+              await _cubit.getListOrderByStatus();
+            },
+            icon: const Icon(Icons.history_toggle_off),
+          ),
+          ActionButton(
+            onPressed: () async {
+              _cubit.status = 2;
+              await _cubit.getListOrderByStatus();
+            },
+            icon: const Icon(Icons.done_outline),
+          ),
+        ],
       ),
     );
   }
 
-  Widget buildCardWidget({required _NestedData data, required VoidCallback onPressed}) => Container(
+  Widget buildCardWidget({required Order data, required VoidCallback onPressed}) => Container(
         margin: EdgeInsets.symmetric(vertical: 15),
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
@@ -107,8 +100,10 @@ class _ManageOrderWidgetState extends State<ManageOrderWidget> {
                 children: [
                   SvgPicture.asset('assets/images/home/gift.svg'),
                   SizedBox(height: SizeConfig.safeBlockHorizontal * 2),
-                  Text(NumberFormat.currency(locale: "vi_vn").format(data.price),
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
+                  Text(
+                    data.fee ?? "",
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700),
+                  ),
                   SizedBox(height: SizeConfig.safeBlockHorizontal * 2),
                 ],
               ),
@@ -118,7 +113,10 @@ class _ManageOrderWidgetState extends State<ManageOrderWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Mã đơn : ${data.code}", style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
+                        Text(
+                          "Mã đơn : ${data.orderNo}",
+                          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700),
+                        ),
                         Text("Chi tiết",
                             style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700, color: Color(0xFF2196F3)))
                       ],
@@ -129,9 +127,37 @@ class _ManageOrderWidgetState extends State<ManageOrderWidget> {
                         children: [
                           Row(
                             children: [
+                              Icon(Icons.date_range_rounded, color: Color(0xFF2196F3), size: 14),
+                              SizedBox(width: SizeConfig.safeBlockHorizontal),
+                              Text("Ngày tạo: ${data.orderedDate.toString().substring(0, 10)}",
+                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                            ],
+                          ),
+                          (_cubit.status != 0)
+                              ? Row(
+                                  children: [
+                                    Icon(Icons.date_range_rounded, color: Color(0xFF2196F3), size: 14),
+                                    SizedBox(width: SizeConfig.safeBlockHorizontal),
+                                    Text("Ngày lấy hàng: ${data.orderedDate.toString().substring(0, 10)}",
+                                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                                  ],
+                                )
+                              : Container(),
+                          (_cubit.status == 2)
+                              ? Row(
+                                  children: [
+                                    Icon(Icons.date_range_rounded, color: Color(0xFF2196F3), size: 14),
+                                    SizedBox(width: SizeConfig.safeBlockHorizontal),
+                                    Text("Ngày nhận hàng: ${data.orderedDate.toString().substring(0, 10)}",
+                                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                                  ],
+                                )
+                              : Container(),
+                          Row(
+                            children: [
                               Icon(Icons.person_outlined, color: Color(0xFF2196F3), size: 14),
                               SizedBox(width: SizeConfig.safeBlockHorizontal),
-                              Text("Họ tên khách hàng: ${data.customerName}",
+                              Text("Họ tên khách hàng: ${data.user!.name ?? ""}",
                                   style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
                             ],
                           ),
@@ -150,20 +176,16 @@ class _ManageOrderWidgetState extends State<ManageOrderWidget> {
                                   style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
                             ],
                           ),
-                          Row(
-                            children: [
-                              Icon(Icons.loop_outlined, color: Color(0xFF2196F3), size: 14),
-                              SizedBox(width: SizeConfig.safeBlockHorizontal),
-                              Expanded(
-                                child: Text(
-                                  "Trạng thái: ${data.status}",
-                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              )
-                            ],
-                          ),
+                          (_cubit.status != 0)
+                              ? Row(
+                                  children: [
+                                    Icon(Icons.person, color: Color(0xFF2196F3), size: 14),
+                                    SizedBox(width: SizeConfig.safeBlockHorizontal),
+                                    Text("Shipper: ${data.account!.name}",
+                                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                                  ],
+                                )
+                              : Container()
                         ],
                       ),
                     )
