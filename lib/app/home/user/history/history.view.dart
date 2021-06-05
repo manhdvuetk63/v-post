@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -6,24 +10,11 @@ import 'package:v_post/app/app.module.dart';
 import 'package:v_post/app/components/app-title/app-title.component.dart';
 import 'package:v_post/app/components/appbar/appbar.component.dart';
 import 'package:v_post/app/home/shared/shared.module.dart';
+import 'package:v_post/app/home/user/history/history.cubit.dart';
 import 'package:v_post/config/config_screen.dart';
+import 'package:v_post/model/user/order/order.dart';
+import 'package:v_post/service/delivery/delivery.service.dart';
 import 'package:v_post/themes/style.dart';
-
-class _NestedData {
-  int price;
-  int code;
-  String senderAddress;
-  String receiverAddress;
-  String status;
-
-  _NestedData({
-    required this.status,
-    required this.code,
-    required this.price,
-    required this.receiverAddress,
-    required this.senderAddress,
-  });
-}
 
 class HistoryWidget extends StatefulWidget {
   const HistoryWidget({Key? key}) : super(key: key);
@@ -33,29 +24,7 @@ class HistoryWidget extends StatefulWidget {
 }
 
 class _HistoryWidgetState extends State<HistoryWidget> {
-  List<_NestedData> _data = [
-    _NestedData(
-      status: "Đã giao / Đang giao",
-      code: 132422211,
-      price: 75000,
-      receiverAddress: "144 Xuân Thủy, Cầu Giấy",
-      senderAddress: "175 Láng Hạ",
-    ),
-    _NestedData(
-      status: "Đã giao / Đang giao",
-      code: 132422211,
-      price: 75000,
-      receiverAddress: "144 Xuân Thủy, Cầu Giấy",
-      senderAddress: "175 Láng Hạ",
-    ),
-    _NestedData(
-      status: "Đã giao / Đang giao",
-      code: 132422211,
-      price: 75000,
-      receiverAddress: "144 Xuân Thủy, Cầu Giấy",
-      senderAddress: "175 Láng Hạ",
-    ),
-  ];
+  HistoryCubit _cubit = HistoryCubit(DeliveryService());
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +41,22 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                 "Lịch sử",
                 style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700, fontSize: 30),
               ),
-              ..._data.map((e) => buildCardWidget(
-                    data: e,
-                    onPressed: () => Modular.to.pushNamed(AppModule.shared + SharedModule.detailDelivery),
-                  ))
+              BlocBuilder(
+                bloc: _cubit,
+                buildWhen: (previous, current) => current is OrdersLoading || current is OrdersLoaded,
+                builder: (context, state) {
+                  return (state is OrdersLoaded)
+                      ? (_cubit.orders!.orders == null)
+                          ? Container()
+                          : Column(children: [
+                              ..._cubit.orders!.orders!.map((e) => buildCardWidget(
+                                    data: e,
+                                    onPressed: () => Modular.to.pushNamed(AppModule.shared + SharedModule.detailDelivery,arguments: e.id),
+                                  ))
+                            ])
+                      : Center(child: CupertinoActivityIndicator(radius: 20));
+                },
+              )
             ],
           ),
         ),
@@ -83,7 +64,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
     );
   }
 
-  Widget buildCardWidget({required _NestedData data, required VoidCallback onPressed}) => Container(
+  Widget buildCardWidget({required Order data, required VoidCallback onPressed}) => Container(
         margin: EdgeInsets.symmetric(vertical: 15),
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
@@ -98,8 +79,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                 children: [
                   SvgPicture.asset('assets/images/home/gift.svg'),
                   SizedBox(height: SizeConfig.safeBlockHorizontal * 2),
-                  Text(NumberFormat.currency(locale: "vi_vn").format(data.price),
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
+                  Text(data.fee ?? "", style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
                   SizedBox(height: SizeConfig.safeBlockHorizontal * 2),
                 ],
               ),
@@ -109,7 +89,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Mã đơn : ${data.code}", style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
+                        Text("Mã đơn : ${data.orderNo}", style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
                         Text("Chi tiết",
                             style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700, color: Color(0xFF2196F3)))
                       ],
@@ -118,6 +98,14 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                       child: Column(
                         children: [
+                          Row(
+                            children: [
+                              Icon(Icons.date_range_rounded, color: Color(0xFF2196F3), size: 14),
+                              SizedBox(width: SizeConfig.safeBlockHorizontal),
+                              Text("Ngày tạo: ${data.orderedDate.toString().substring(0, 10)}",
+                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                            ],
+                          ),
                           Row(
                             children: [
                               Icon(Icons.my_location, color: Color(0xFF2196F3), size: 14),
@@ -137,9 +125,21 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                             children: [
                               Icon(Icons.loop_outlined, color: Color(0xFF2196F3), size: 14),
                               SizedBox(width: SizeConfig.safeBlockHorizontal),
-                              Text("Trạng thái: ${data.status}", style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                              Text(
+                                  "Trạng thái: ${data.status == 0 ? "Chưa có shipper" : data.status == 1 ? "Đã có shipper" : "Đã giao"}",
+                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
                             ],
                           ),
+                          (data.account != null)
+                              ? Row(
+                                  children: [
+                                    Icon(Icons.person, color: Color(0xFF2196F3), size: 14),
+                                    SizedBox(width: SizeConfig.safeBlockHorizontal),
+                                    Text("Shipper: ${data.account!.name}",
+                                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                                  ],
+                                )
+                              : Container()
                         ],
                       ),
                     )

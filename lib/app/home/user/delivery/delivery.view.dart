@@ -10,8 +10,8 @@ import 'package:v_post/app/home/user/delivery/delivery.cubit.dart';
 import 'package:v_post/app/home/user/delivery/delivery.module.dart';
 import 'package:v_post/app/home/user/home.module.dart';
 import 'package:v_post/config/config_screen.dart';
+import 'package:v_post/service/delivery/delivery.service.dart';
 import 'package:v_post/themes/style.dart';
-import 'package:wemapgl/wemapgl.dart';
 
 class _NestedData {
   String hintText;
@@ -31,7 +31,7 @@ class DeliveryWidget extends StatefulWidget {
 
 class _DeliveryWidgetState extends State<DeliveryWidget> {
   GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
-  DeliveryCubit _cubit = DeliveryCubit();
+  DeliveryCubit _cubit = DeliveryCubit(DeliveryService());
   List<MapEntry<String, List<_NestedData>>> _allForm = [
     MapEntry(
       "Người gửi",
@@ -85,7 +85,16 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                 Align(
                   alignment: Alignment.center,
                   child: CommonButton(
-                    onPressed: () => Modular.to.pushNamed(AppModule.user + UserHomeModule.delivery + DeliveryModule.deliveryConfirmation),
+                    onPressed: () async {
+                      if (_fbKey.currentState!.saveAndValidate()) {
+                        _cubit.order = await _cubit.confirmOrder(_fbKey.currentState!.value);
+                        Modular.to
+                            .pushNamed(AppModule.user + UserHomeModule.delivery + DeliveryModule.deliveryConfirmation, arguments: _cubit.order)
+                            .whenComplete(() => _fbKey.currentState!.reset());
+                      } else {
+                        print('aaa');
+                      }
+                    },
                     child: Text(
                       "Tiếp theo",
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(
@@ -159,11 +168,11 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
               prefixIcon: e.icon,
             ),
             // Todo: uncomment to navigate to place picking.
-            onTap: () => Modular.to.pushNamed(AppModule.user + UserHomeModule.delivery + DeliveryModule.placePicking).then((value) {
-              setState(() {
-                type == 1 ? _cubit.placeSender = value as WeMapPlace? : _cubit.placeReceiver = value as WeMapPlace?;
-              });
-            }),
+            // onTap: () => Modular.to.pushNamed(AppModule.user + UserHomeModule.delivery + DeliveryModule.placePicking).then((value) {
+            //   setState(() {
+            //     type == 1 ? _cubit.placeSender = value as WeMapPlace? : _cubit.placeReceiver = value as WeMapPlace?;
+            //   });
+            // }),
             keyboardType: TextInputType.text,
             validator: FormBuilderValidators.required(context),
           ),

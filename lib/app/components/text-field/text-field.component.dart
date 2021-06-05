@@ -42,6 +42,7 @@ class TextFieldState extends State<TextFieldView> {
                 bloc: _cubit,
                 builder: (context, hasShowPassword) {
                   return FormBuilderTextField(
+                    onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
                     maxLines: 1,
                     name: widget.name,
                     initialValue: widget.initialValue,
