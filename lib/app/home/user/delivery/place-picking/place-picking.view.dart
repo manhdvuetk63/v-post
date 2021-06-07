@@ -6,6 +6,7 @@ import 'package:v_post/app/components/appbar/appbar.component.dart';
 import 'package:v_post/app/home/user/delivery/place-picking/place-picking.cubit.dart';
 import 'package:v_post/config/config_screen.dart';
 import 'package:v_post/themes/style.dart';
+import 'package:v_post/utils/location.dart';
 import 'package:wemapgl/wemapgl.dart';
 
 class PlacePicking extends StatefulWidget {
@@ -32,9 +33,12 @@ class _PlacePickingState extends State<PlacePicking> {
           Container(
             margin: EdgeInsets.all(10),
             child: IconButton(
-              icon: Icon(Icons.check, color: AppColor.accentColor,),
+              icon: Icon(
+                Icons.check,
+                color: AppColor.accentColor,
+              ),
               onPressed: () {
-                Navigator.pop(context,_cubit.place);
+                Navigator.pop(context, _cubit.place);
               },
             ),
           ),
@@ -86,17 +90,20 @@ class _PlacePickingState extends State<PlacePicking> {
                       ),
                       SizedBox(height: 5),
                       TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            var pos = await determinePosition();
+                            _cubit.mapController.moveCamera(
+                              CameraUpdate.newCameraPosition(
+                                CameraPosition(target: LatLng(pos.latitude, pos.longitude), zoom: 14.0),
+                              ),
+                            );
+                            
+                          },
                           child: Row(
                             children: [
                               Icon(Icons.my_location),
-                              SizedBox(
-                                width: SizeConfig.blockSizeHorizontal * 5,
-                              ),
-                              Text(
-                                'Vị trí của tôi',
-                                style: TextStyle(color: Colors.black, fontSize: 18),
-                              )
+                              SizedBox(width: SizeConfig.blockSizeHorizontal * 5),
+                              Text('Vị trí của tôi', style: TextStyle(color: Colors.black, fontSize: 18))
                             ],
                           )),
                       Container(
@@ -124,18 +131,20 @@ class _PlacePickingState extends State<PlacePicking> {
 
   Widget _buildNearLocation(int index) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        var location = LatLng(21.015872, 105.7898832);
+        _cubit.mapController.moveCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: location, zoom: 16.0),
+          ),
+        );
+      },
       child: Container(
           margin: EdgeInsets.only(top: 10, bottom: 10),
           child: Row(
             children: [
-              Icon(
-                Icons.location_on_outlined,
-                size: 40,
-              ),
-              SizedBox(
-                width: SizeConfig.blockSizeHorizontal * 5,
-              ),
+              Icon(Icons.location_on_outlined, size: 40),
+              SizedBox(width: SizeConfig.blockSizeHorizontal * 5),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

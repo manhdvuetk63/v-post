@@ -24,6 +24,7 @@ dependencies:
   flutter_modular: ^3.2.2+1
   permission_handler: ^8.0.1
   flutter_rating_bar: ^4.0.0
+  geolocator: ^7.0.3
   intl: any
   wemapgl:
     path: WeMap-Flutter-SDK

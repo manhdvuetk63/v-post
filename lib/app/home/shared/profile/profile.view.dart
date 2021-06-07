@@ -121,7 +121,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               );
             }
             else {
-              return Center(child: CupertinoActivityIndicator(radius: 20));
+              return Center(child: CircularProgressIndicator(color: AppColor.accentColor));
             }
           },
         )
