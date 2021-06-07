@@ -39,4 +39,13 @@ class DeliveryService {
         ? Orders.fromJson(response.data as Map<String, dynamic>)
         : throw NetworkException(message: Map<String, dynamic>.from("get false" as Map<String, dynamic>));
   }
+
+  Future<bool> forwardOrder(Map<String, dynamic> params) async {
+    final response = await DeliveryRepository.forwardOrder(params);
+    return (response.statusCode == 200);
+  }
+  Future<bool> doneOrder(Map<String, dynamic> params) async {
+    final response = await DeliveryRepository.doneOrder(params);
+    return (response.statusCode == 200);
+  }
 }

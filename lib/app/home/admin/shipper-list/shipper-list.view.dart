@@ -9,22 +9,6 @@ import 'package:v_post/model/user/order/order.dart';
 import 'package:v_post/service/account/account.service.dart';
 import 'package:v_post/themes/style.dart';
 
-class _NestedData {
-  String customerName;
-  String customerPhone;
-  String mail;
-  double rating;
-  String imageUrl;
-
-  _NestedData({
-    required this.customerName,
-    required this.customerPhone,
-    required this.mail,
-    required this.rating,
-    required this.imageUrl,
-  });
-}
-
 class ShipperListWidget extends StatefulWidget {
   const ShipperListWidget({Key? key}) : super(key: key);
 
@@ -34,12 +18,6 @@ class ShipperListWidget extends StatefulWidget {
 
 class _ShipperListWidgetState extends State<ShipperListWidget> {
   ShipperListCubit _cubit = ShipperListCubit(AccountService());
-  List<_NestedData> _data = [
-    _NestedData(customerName: "Đỗ Vân", customerPhone: "0915919357", mail: "phong@gmail.com", rating: 4.7, imageUrl: ""),
-    _NestedData(customerName: "Đỗ Vân", customerPhone: "0915919357", mail: "phong@gmail.com", rating: 4.7, imageUrl: ""),
-    _NestedData(customerName: "Đỗ Vân", customerPhone: "0915919357", mail: "phong@gmail.com", rating: 4.7, imageUrl: ""),
-    _NestedData(customerName: "Đỗ Vân", customerPhone: "0915919357", mail: "phong@gmail.com", rating: 4.7, imageUrl: ""),
-  ];
 
   @override
   Widget build(BuildContext context) {

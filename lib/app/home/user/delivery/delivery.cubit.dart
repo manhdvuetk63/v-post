@@ -13,6 +13,8 @@ class DeliveryCubit extends Cubit<DeliveryState> {
   Order order = Order();
   WeMapPlace? placeSender;
   WeMapPlace? placeReceiver;
+  WeMapDirections directionAPI = WeMapDirections();
+  int tripDistance = 0;
 
   DeliveryCubit(this._deliveryService) : super(DeliveryInitial()) {}
 
@@ -22,15 +24,32 @@ class DeliveryCubit extends Cubit<DeliveryState> {
       "value": int.parse(data['package_price'].toString()),
       "weight": double.parse(data['package_weight'].toString()),
       "description": data['package_description'],
-      "status": false,
+      "status": 0,
       "senderName": data['sender_name'],
       "senderPhone": data['sender_phone'],
       "senderAddress": data['sender_address'],
       "receiverName": data['receiver_name'],
       "receiverPhone": data['receiver_phone'],
       "receiverAddress": data['receiver_address'],
-      "orderedDate": DateTime.now().toString(),
+      "orderedDate": DateTime.now().toString().substring(0, 10),
     });
+    var json = await directionAPI.getResponseMultiRoute(0, [placeSender!.location!, placeReceiver!.location!]); //0 = car, 1 = bike, 2 = foot
+    print(json);
+    var dis = double.parse((directionAPI.getDistance(json) / 1000).toStringAsFixed(1));
+    int feeShip;
+    int feeItem;
+    if (dis < 3) {
+      feeShip = 20000;
+    } else {
+      feeShip = (dis * 10000).round();
+    }
+    if (order.value! < 500000) {
+      feeItem = 0;
+    } else {
+      feeItem = 50000;
+    }
+    order.fee = "${feeItem + feeShip} VNĐ";
+    order.distance = "$dis km";
     print(order.toJson());
     return order;
   }
@@ -41,7 +60,7 @@ class DeliveryCubit extends Cubit<DeliveryState> {
       "value": int.parse(data['package_price'].toString()),
       "weight": double.parse(data['package_weight'].toString()),
       "description": data['package_description'],
-      "status": false,
+      "status": 0,
       "senderName": data['sender_name'],
       "senderPhone": data['sender_phone'],
       "senderAddress": data['sender_address'],
@@ -53,7 +72,7 @@ class DeliveryCubit extends Cubit<DeliveryState> {
       "receivedDate": DateTime.parse(data['receive_date'].toString()).toString().substring(0, 10),
       "distance": data['distance'],
       "fee": data['fee'],
-      "creatorUserId": Application.sharePreference.getInt("UserId") ?? 1
+      "creatorUserId": Application.sharePreference.getInt("userId")
     };
     emit(Create());
     var response = await _deliveryService.createNewOrder(params);
