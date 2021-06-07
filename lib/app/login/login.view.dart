@@ -12,6 +12,7 @@ import 'package:v_post/app/components/text-field/text-field.component.dart';
 import 'package:v_post/app/login/login.cubit.dart';
 import 'package:v_post/config/application.dart';
 import 'package:v_post/config/config_screen.dart';
+import 'package:v_post/service/account/account.service.dart';
 import 'package:v_post/themes/style.dart';
 
 class Login extends StatefulWidget {
@@ -23,7 +24,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
-  final LoginCubit _cubit = LoginCubit();
+  final LoginCubit _cubit = LoginCubit(AccountService());
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +106,7 @@ class _LoginState extends State<Login> {
                       onPressed: () async {
                         _fbKey.currentState!.saveAndValidate()
                             ? await _cubit.login(_fbKey.currentState!.value)
-                                ? Modular.to.pushReplacementNamed(AppModule.switching)
+                                ? _navigate(Application.sharePreference.getInt("type"))
                                 : Application.toast.showToastNotification("Wrong User Name or Password")
                             : Application.toast.showToastNotification("Invalid Value");
                       },
@@ -180,4 +181,21 @@ class _LoginState extends State<Login> {
           ),
         ],
       );
+
+  void _navigate(int? type) {
+    switch (type) {
+      case 1:
+        Modular.to.pushReplacementNamed("/user");
+        break;
+      case 2:
+        Modular.to.pushReplacementNamed("/shipper");
+        break;
+      case 3:
+        Modular.to.pushReplacementNamed("/admin");
+        break;
+      default:
+        Modular.to.pushReplacementNamed("/user");
+        break;
+    }
+  }
 }

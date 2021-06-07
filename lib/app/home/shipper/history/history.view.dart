@@ -47,7 +47,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                           ),
                           ..._cubit.orders!.orders!.map((e) => buildCardWidget(
                                 data: e,
-                                onPressed: () => Modular.to.pushNamed(AppModule.shared + SharedModule.detailDelivery),
+                                onPressed: () => Modular.to.pushNamed(AppModule.shared + SharedModule.detailDelivery,arguments: e.id),
                               ))
                         ],
                       ),
@@ -83,7 +83,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Mã đơn : ID${data.orderNo}", style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
+                        Text("Mã đơn : ${data.orderNo}", style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700)),
                         Text("Chi tiết",
                             style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w700, color: Color(0xFF2196F3)))
                       ],
@@ -96,23 +96,36 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                             children: [
                               Icon(Icons.person_outlined, color: Color(0xFF2196F3), size: 14),
                               SizedBox(width: SizeConfig.safeBlockHorizontal),
-                              Text("Họ tên khách hàng: ${data.user!.name}",
-                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                              Text("Tên KH", style: TextStyle(fontWeight: FontWeight.bold)),
+                              SizedBox(width: SizeConfig.safeBlockHorizontal),
+                              Text("${data.user!.name}", style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
                             ],
                           ),
                           Row(
                             children: [
                               Icon(Icons.my_location, color: Color(0xFF2196F3), size: 14),
                               SizedBox(width: SizeConfig.safeBlockHorizontal),
-                              Text("Điểm đi: ${data.senderAddress}", style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                              Text("Điểm đi", style: TextStyle(fontWeight: FontWeight.bold)),
+                              SizedBox(width: SizeConfig.safeBlockHorizontal),
+                              Expanded(
+                                  child: Text("${data.senderAddress}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040))))
                             ],
                           ),
                           Row(
                             children: [
                               Icon(Icons.place_outlined, color: Color(0xFF2196F3), size: 14),
                               SizedBox(width: SizeConfig.safeBlockHorizontal),
-                              Text("Điểm đến: ${data.receiverAddress}",
-                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                              Text("Điểm đến", style: TextStyle(fontWeight: FontWeight.bold)),
+                              SizedBox(width: SizeConfig.safeBlockHorizontal),
+                              Expanded(
+                                child: Text("Điểm đến: ${data.receiverAddress}",
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040))),
+                              )
                             ],
                           ),
                           Row(

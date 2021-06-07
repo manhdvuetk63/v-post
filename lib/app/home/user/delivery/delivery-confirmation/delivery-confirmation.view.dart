@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:intl/intl.dart';
 import 'package:v_post/app/components/app-title/app-title.component.dart';
 import 'package:v_post/app/components/appbar/appbar.component.dart';
@@ -99,8 +100,8 @@ class _DeliveryConfirmationWidgetState extends State<DeliveryConfirmationWidget>
               "package_description": widget.order!.description,
               "picking_date": DateFormat('yyyy-MM-dd').format(widget.order!.orderedDate!.add(const Duration(days: 1))).toString(),
               "receive_date": DateFormat('yyyy-MM-dd').format(widget.order!.orderedDate!.add(const Duration(days: 3))).toString(),
-              "distance": " 10 km",
-              "fee": " 75.000 VND",
+              "distance": widget.order!.distance,
+              "fee": widget.order!.fee,
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,7 +129,8 @@ class _DeliveryConfirmationWidgetState extends State<DeliveryConfirmationWidget>
                               onPressed: () async {
                                 if (_fbKey.currentState!.saveAndValidate()) {
                                   await _cubit.createOrder(_fbKey.currentState!.value);
-                                  Navigator.pop(context);
+                                  Modular.to.pushReplacementNamed("/user");
+                                  // Navigator.pop(context);
                                 }
                               },
                               child: Text(

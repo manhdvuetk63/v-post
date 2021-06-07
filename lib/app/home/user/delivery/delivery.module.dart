@@ -4,6 +4,7 @@ import 'package:v_post/app/home/user/delivery/delivery-confirmation/delivery-con
 import 'package:v_post/app/home/user/delivery/delivery.view.dart';
 import 'package:v_post/app/home/user/delivery/place-picking/place-picking.view.dart';
 import 'package:v_post/model/user/order/order.dart';
+import 'package:wemapgl/wemapgl.dart';
 
 class DeliveryModule extends WidgetModule {
   static String deliveryConfirmation = "/deliveryConfirmation";
@@ -17,7 +18,7 @@ class DeliveryModule extends WidgetModule {
   final List<ModularRoute> routes = [
     ChildRoute('/', child: (context, args) => DeliveryWidget()),
     ChildRoute(deliveryConfirmation, child: (context, args) => DeliveryConfirmationWidget(order: args.data as Order)),
-    ChildRoute(placePicking, child: (context, args) => PlacePicking()),
+    ChildRoute<WeMapPlace?>(placePicking, child: (context, args) => PlacePicking()),
   ];
 
   final Widget view = DeliveryWidget();

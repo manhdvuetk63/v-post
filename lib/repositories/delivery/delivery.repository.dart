@@ -20,4 +20,10 @@ class DeliveryRepository {
   static Future<dynamic> getOrderByStatus(int params) {
     return Application.api.get('/orders/status/$params');
   }
+  static Future<dynamic> forwardOrder(Map<String, dynamic> params) {
+    return Application.api.post('/orders/forward',params);
+  }
+  static Future<dynamic> doneOrder(Map<String, dynamic> params) {
+    return Application.api.post('/orders/done',params);
+  }
 }

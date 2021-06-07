@@ -12,14 +12,16 @@ import 'package:v_post/app/home/user/home.module.dart';
 import 'package:v_post/config/config_screen.dart';
 import 'package:v_post/service/delivery/delivery.service.dart';
 import 'package:v_post/themes/style.dart';
+import 'package:wemapgl/wemapgl.dart';
 
 class _NestedData {
   String hintText;
   Icon icon;
   String name;
   int? typeAddress;
+  FormFieldValidator<String>? validator;
 
-  _NestedData({required this.name, required this.hintText, required this.icon, this.typeAddress});
+  _NestedData({required this.name, required this.hintText, required this.icon, this.typeAddress, this.validator});
 }
 
 class DeliveryWidget extends StatefulWidget {
@@ -31,37 +33,52 @@ class DeliveryWidget extends StatefulWidget {
 
 class _DeliveryWidgetState extends State<DeliveryWidget> {
   GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
+  late List<MapEntry<String, List<_NestedData>>> _allForm;
+
   DeliveryCubit _cubit = DeliveryCubit(DeliveryService());
-  List<MapEntry<String, List<_NestedData>>> _allForm = [
-    MapEntry(
-      "Người gửi",
-      [
-        _NestedData(name: "sender_name", hintText: "Họ và tên", icon: Icon(Icons.person_outlined)),
-        _NestedData(name: "sender_phone", hintText: "Số điện thoại", icon: Icon(Icons.call_outlined)),
-        _NestedData(name: "sender_address", hintText: "Địa chỉ", icon: Icon(Icons.place_outlined), typeAddress: 1),
-      ],
-    ),
-    MapEntry(
-      "Người nhận",
-      [
-        _NestedData(name: "receiver_name", hintText: "Họ và tên", icon: Icon(Icons.person_outlined)),
-        _NestedData(name: "receiver_phone", hintText: "Số điện thoại", icon: Icon(Icons.call_outlined)),
-        _NestedData(name: "receiver_address", hintText: "Địa chỉ", icon: Icon(Icons.place_outlined), typeAddress: 2),
-      ],
-    ),
-    MapEntry(
-      "Hàng hoá",
-      [
-        _NestedData(name: "package_name", hintText: "Tên hàng hóa", icon: Icon(Icons.all_inbox_outlined)),
-        _NestedData(name: "package_price", hintText: "Giá trị", icon: Icon(Icons.attach_money_outlined)),
-        _NestedData(name: "package_weight", hintText: "Khối lượng (gam)", icon: Icon(Icons.line_weight_outlined)),
-        _NestedData(name: "package_description", hintText: "Mô tả", icon: Icon(Icons.description_outlined)),
-      ],
-    ),
-  ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _allForm = [
+      MapEntry(
+        "Người gửi",
+        [
+          _NestedData(name: "sender_name", hintText: "Họ và tên", icon: Icon(Icons.person_outlined)),
+          _NestedData(name: "sender_phone", hintText: "Số điện thoại", icon: Icon(Icons.call_outlined)),
+          _NestedData(name: "sender_address", hintText: "Địa chỉ", icon: Icon(Icons.place_outlined), typeAddress: 1),
+        ],
+      ),
+      MapEntry(
+        "Người nhận",
+        [
+          _NestedData(name: "receiver_name", hintText: "Họ và tên", icon: Icon(Icons.person_outlined)),
+          _NestedData(name: "receiver_phone", hintText: "Số điện thoại", icon: Icon(Icons.call_outlined)),
+          _NestedData(name: "receiver_address", hintText: "Địa chỉ", icon: Icon(Icons.place_outlined), typeAddress: 2),
+        ],
+      ),
+      MapEntry(
+        "Hàng hoá",
+        [
+          _NestedData(name: "package_name", hintText: "Tên hàng hóa", icon: Icon(Icons.all_inbox_outlined)),
+          _NestedData(
+              name: "package_price", hintText: "Giá trị", icon: Icon(Icons.attach_money_outlined), validator: FormBuilderValidators.integer(context)),
+          _NestedData(
+              name: "package_weight",
+              hintText: "Khối lượng (kg)",
+              icon: Icon(Icons.line_weight_outlined),
+              validator: FormBuilderValidators.integer(context)),
+          _NestedData(name: "package_description", hintText: "Mô tả", icon: Icon(Icons.description_outlined)),
+        ],
+      ),
+    ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Do Phong nên mới để vào đây
+
     return Scaffold(
       appBar: staticAppbar(
         title: AppTitle(),
@@ -129,7 +146,13 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
             ),
             ...data.map(
               (e) => e.hintText != "Địa chỉ"
-                  ? TextFieldView(name: e.name, type: 'text_field', hintText: e.hintText, prefixIcon: e.icon)
+                  ? TextFieldView(
+                      name: e.name,
+                      type: 'text_field',
+                      hintText: e.hintText,
+                      prefixIcon: e.icon,
+                      validator: e.validator,
+                    )
                   : buildCustomAddressForm(e, e.typeAddress),
             ),
           ],
@@ -138,8 +161,14 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
 
   Widget buildCustomAddressForm(_NestedData e, int? type) => Padding(
         padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical),
-        child: Container(
+        child: GestureDetector(
+          onTap: () => Modular.to.pushNamed<WeMapPlace?>(AppModule.user + UserHomeModule.delivery + DeliveryModule.placePicking).then((value) {
+            setState(() {
+              type == 1 ? _cubit.placeSender = value : _cubit.placeReceiver = value;
+            });
+          }),
           child: FormBuilderTextField(
+            enabled: false,
             name: e.name,
             maxLines: 1,
             style: const TextStyle(fontSize: 18),
@@ -165,14 +194,13 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                 borderSide: BorderSide(color: AppColor.errorColor, width: 1.25, style: BorderStyle.solid),
                 borderRadius: BorderRadius.circular(13),
               ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColor.accentColor, width: 1.25, style: BorderStyle.solid),
+                borderRadius: BorderRadius.circular(13),
+              ),
               prefixIcon: e.icon,
             ),
             // Todo: uncomment to navigate to place picking.
-            // onTap: () => Modular.to.pushNamed(AppModule.user + UserHomeModule.delivery + DeliveryModule.placePicking).then((value) {
-            //   setState(() {
-            //     type == 1 ? _cubit.placeSender = value as WeMapPlace? : _cubit.placeReceiver = value as WeMapPlace?;
-            //   });
-            // }),
             keyboardType: TextInputType.text,
             validator: FormBuilderValidators.required(context),
           ),

@@ -21,9 +21,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<Timer> startTime() async => Timer(Duration(milliseconds: 1500), navigationPage);
 
-  void navigationPage() => Application.sharePreference.hasKey('authToken') && Application.sharePreference.hasKey('userId')
-      ? Modular.to.pushReplacementNamed(AppModule.switching)
-      : Modular.to.pushReplacementNamed(AppModule.switching);
+  void navigationPage() => Application.sharePreference.hasKey('type') && Application.sharePreference.hasKey('userId')
+      ? _navigate(Application.sharePreference.getInt("type"))
+      : Modular.to.pushReplacementNamed(AppModule.login);
 
   @override
   Widget build(BuildContext context) {
@@ -34,5 +34,22 @@ class _SplashScreenState extends State<SplashScreen> {
         child: LoadingDots(numberDots: 5),
       ),
     );
+  }
+
+  void _navigate(int? type) {
+    switch (type) {
+      case 1:
+        Modular.to.pushReplacementNamed("/user");
+        break;
+      case 2:
+        Modular.to.pushReplacementNamed("/shipper");
+        break;
+      case 3:
+        Modular.to.pushReplacementNamed("/admin");
+        break;
+      default:
+        Modular.to.pushReplacementNamed("/user");
+        break;
+    }
   }
 }

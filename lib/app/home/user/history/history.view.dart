@@ -51,7 +51,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                           : Column(children: [
                               ..._cubit.orders!.orders!.map((e) => buildCardWidget(
                                     data: e,
-                                    onPressed: () => Modular.to.pushNamed(AppModule.shared + SharedModule.detailDelivery,arguments: e.id),
+                                    onPressed: () => Modular.to.pushNamed(AppModule.shared + SharedModule.detailDelivery, arguments: e.id),
                                   ))
                             ])
                       : Center(child: CupertinoActivityIndicator(radius: 20));
@@ -102,7 +102,9 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                             children: [
                               Icon(Icons.date_range_rounded, color: Color(0xFF2196F3), size: 14),
                               SizedBox(width: SizeConfig.safeBlockHorizontal),
-                              Text("Ngày tạo: ${data.orderedDate.toString().substring(0, 10)}",
+                              Text("Ngày tạo", style: TextStyle(fontWeight: FontWeight.bold)),
+                              SizedBox(width: SizeConfig.safeBlockHorizontal),
+                              Text("${data.orderedDate.toString().substring(0, 10)}",
                                   style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
                             ],
                           ),
@@ -110,23 +112,28 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                             children: [
                               Icon(Icons.my_location, color: Color(0xFF2196F3), size: 14),
                               SizedBox(width: SizeConfig.safeBlockHorizontal),
-                              Text("Điểm đi: ${data.senderAddress}", style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                              Text("Điểm đi", style: TextStyle(fontWeight: FontWeight.bold)),
+                              SizedBox(width: SizeConfig.safeBlockHorizontal),
+                              Expanded(child: Text("${data.senderAddress}", overflow: TextOverflow.ellipsis,maxLines: 1,style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040))))
                             ],
                           ),
                           Row(
                             children: [
                               Icon(Icons.place_outlined, color: Color(0xFF2196F3), size: 14),
                               SizedBox(width: SizeConfig.safeBlockHorizontal),
-                              Text("Điểm đến: ${data.receiverAddress}",
-                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                              Text("Điểm đến", style: TextStyle(fontWeight: FontWeight.bold)),
+                              SizedBox(width: SizeConfig.safeBlockHorizontal),
+                              Expanded(child: Text("${data.receiverAddress}",overflow: TextOverflow.ellipsis,maxLines: 1 ,style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040))))
                             ],
                           ),
                           Row(
                             children: [
                               Icon(Icons.loop_outlined, color: Color(0xFF2196F3), size: 14),
                               SizedBox(width: SizeConfig.safeBlockHorizontal),
+                              Text("Trạng thái", style: TextStyle(fontWeight: FontWeight.bold)),
+                              SizedBox(width: SizeConfig.safeBlockHorizontal),
                               Text(
-                                  "Trạng thái: ${data.status == 0 ? "Chưa có shipper" : data.status == 1 ? "Đã có shipper" : "Đã giao"}",
+                                  "${data.status == 0 ? "Chưa có shipper" : data.status == 1 ? "Đã có shipper" : "Đã giao"}",
                                   style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
                             ],
                           ),
@@ -135,8 +142,9 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                                   children: [
                                     Icon(Icons.person, color: Color(0xFF2196F3), size: 14),
                                     SizedBox(width: SizeConfig.safeBlockHorizontal),
-                                    Text("Shipper: ${data.account!.name}",
-                                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
+                                    Text("Shipper", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    SizedBox(width: SizeConfig.safeBlockHorizontal),
+                                    Text("${data.account!.name}", style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Color(0xFF404040)))
                                   ],
                                 )
                               : Container()

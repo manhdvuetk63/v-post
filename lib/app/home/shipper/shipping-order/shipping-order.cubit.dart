@@ -11,7 +11,7 @@ class ShippingOrderCubit extends Cubit<ShippingOrderState> {
   DeliveryService _deliveryService;
   Orders? orders;
 
-  ShippingOrderCubit(this._deliveryService) : super(ShippingOrderInitial()){
+  ShippingOrderCubit(this._deliveryService) : super(ShippingOrderInitial()) {
     getOrder(1);
   }
 
@@ -21,5 +21,17 @@ class ShippingOrderCubit extends Cubit<ShippingOrderState> {
     orders = await _deliveryService.getOrderByShipperIdAndStatus(params);
     emit(Loaded());
     return orders;
+  }
+
+  Future<bool> doneOrder(dynamic orderId) async {
+    emit(Loading());
+    var params = {"orderId": int.parse(orderId.toString())};
+    var op = await _deliveryService.doneOrder(params);
+    if (op) {
+      emit(Loaded());
+    } else {
+      emit(LoadFalse());
+    }
+    return op;
   }
 }
