@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:v_post/app/app.module.dart';
 import 'package:v_post/config/application.dart';
 
 class API {
-  static String baseUrl = "http://192.168.31.29:9000";
+  static String baseUrl = "http://192.168.31.170:9000";
 
   final Dio dio = Dio(
     BaseOptions(
@@ -38,6 +40,7 @@ class API {
         onError: (DioError e, ErrorInterceptorHandler handler) async {
           handleTimeOutException(e.type);
           // Refresh Token
+          Modular.to.pushReplacementNamed(AppModule.login);
           print(e);
           return handler.resolve(e.response!); //continue
         },
